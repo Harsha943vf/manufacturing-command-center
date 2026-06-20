@@ -1,0 +1,4 @@
+plant_id,plant_name,region,plant_type,capacity_units_per_day
+P1,Plant 1 - Midwest,United States,Heavy Assembly,4800
+P2,Plant 2 - Southeast,United States,Precision Components,3600
+P3,Plant 3 - Monterrey,Mexico,High-Volume Assembly,5200

@@ -1,0 +1,13 @@
+supplier_id,supplier_name,region,lpi_score,tier,on_time_delivery_rate
+S1,Bavarian Precision Components,Germany,4.2,Tier 2,0.796
+S2,Rhine Industrial Supply,Germany,4.2,Tier 2,0.796
+S3,Heartland Fasteners Co.,United States,3.9,Tier 1,0.775
+S4,Great Lakes Bearings,United States,3.9,Tier 2,0.775
+S5,Saigon Electronics Manufacturing,Vietnam,3.3,Tier 1,0.734
+S6,Hanoi Precision Parts,Vietnam,3.3,Tier 2,0.734
+S7,Shenzhen Component Group,China,3.6,Tier 2,0.755
+S8,Guangzhou Metalworks,China,3.6,Tier 2,0.755
+S9,Pune Industrial Castings,India,3.2,Tier 1,0.728
+S10,Bangalore Tooling Systems,India,3.2,Tier 2,0.728
+S11,Monterrey Metal Supply,Mexico,3.1,Tier 2,0.721
+S12,Queretaro Components Inc.,Mexico,3.1,Tier 2,0.721

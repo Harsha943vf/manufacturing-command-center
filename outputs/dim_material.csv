@@ -1,0 +1,13 @@
+material_id,material_name,category,supplier_id,criticality_rank
+MAT1,Precision Bearing Assembly,Mechanical,S1,Critical
+MAT2,Hydraulic Seal Kit,Mechanical,S2,High
+MAT3,Steel Fastener Set,Hardware,S3,Medium
+MAT4,Industrial Bearing Set,Mechanical,S4,Critical
+MAT5,PCB Control Module,Electronics,S5,Critical
+MAT6,Wiring Harness,Electronics,S6,High
+MAT7,Aluminum Housing Casting,Metal,S7,High
+MAT8,Sheet Metal Stock,Metal,S8,Medium
+MAT9,Cast Iron Bracket,Metal,S9,Medium
+MAT10,Precision Tooling Insert,Tooling,S10,High
+MAT11,Motor Mount Assembly,Mechanical,S11,High
+MAT12,Gasket & Sealing Kit,Mechanical,S12,Medium

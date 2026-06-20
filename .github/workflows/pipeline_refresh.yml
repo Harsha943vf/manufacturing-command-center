@@ -1,0 +1,61 @@
+name: manufacturing-pipeline-refresh
+
+# Replaces Airflow + Docker for this portfolio project. GitHub Actions runs
+# entirely in the cloud on GitHub's free tier (2,000 minutes/month for public
+# repos, which a project this size uses a tiny fraction of), so nothing needs
+# to be installed or running on your Mac for the "automated pipeline" story to
+# be true. This is also a perfectly legitimate production pattern at small-to-
+# mid scale -- plenty of real companies orchestrate dbt this way.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # daily at 06:00 UTC
+  workflow_dispatch: {}    # lets you trigger it manually from the GitHub UI for a demo
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Regenerate synthetic data
+        run: |
+          cd data_generation
+          python3 generate_synthetic_data.py
+
+      - name: Copy fresh data into dbt seeds
+        run: |
+          cp outputs/*.csv dbt_project/seeds/
+
+      - name: Run dbt seed + run + test
+        working-directory: dbt_project
+        env:
+          DBT_PROFILES_DIR: .
+        run: |
+          dbt deps
+          dbt seed
+          dbt run
+          dbt test
+          dbt snapshot
+
+      - name: Upload pipeline run log as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-run-results
+          path: dbt_project/target/run_results.json
+
+      # Optional next step once you're comfortable: commit the refreshed
+      # .duckdb file back to a "data" branch, or push it to a small cloud
+      # storage bucket (e.g. free-tier Cloudflare R2 / Supabase storage) so
+      # Tableau Public's data refresh can pick it up automatically.

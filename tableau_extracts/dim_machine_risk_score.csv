@@ -1,0 +1,32 @@
+machine_id,line_id,machine_type,total_runs,total_failures,mtbf_minutes,total_downtime_minutes,machine_risk_score
+M-108,P1-L3,Stamping Press,388,35,5321.1,3534,82.4
+M-104,P1-L2,Robotic Welder,593,37,7693.0,3735,75.0
+M-107,P1-L3,Robotic Welder,434,22,9469.1,2017,73.5
+M-112,P2-L1,CNC Mill,408,21,9325.7,1655,73.0
+M-116,P2-L2,CNC Mill,548,30,8768.0,2495,72.2
+M-130,P3-L3,Injection Molder,412,20,9888.0,1676,69.5
+M-113,P2-L1,Injection Molder,403,24,8060.0,1824,66.3
+M-123,P3-L1,Injection Molder,550,17,15529.4,1878,65.5
+M-119,P2-L3,Robotic Welder,552,16,16560.0,1309,64.2
+M-120,P2-L3,Conveyor/Assembly,548,17,15472.9,1601,64.0
+M-122,P3-L1,Robotic Welder,574,25,11020.8,2253,62.6
+M-127,P3-L2,Stamping Press,422,20,10128.0,1993,61.2
+M-129,P3-L3,CNC Mill,401,18,10693.3,1427,57.7
+M-109,P1-L3,Injection Molder,445,17,12564.7,1522,57.3
+M-115,P2-L2,Conveyor/Assembly,565,25,10848.0,2082,55.4
+M-117,P2-L2,Conveyor/Assembly,531,12,21240.0,1274,50.9
+M-111,P2-L1,Conveyor/Assembly,413,13,15249.2,1312,50.5
+M-118,P2-L3,CNC Mill,544,14,18651.4,1064,47.5
+M-131,P3-L3,Injection Molder,442,13,16320.0,1410,46.4
+M-102,P1-L1,Injection Molder,520,8,31200.0,739,43.5
+M-125,P3-L2,Conveyor/Assembly,410,7,28114.3,437,42.4
+M-101,P1-L1,Robotic Welder,531,7,36411.4,613,42.1
+M-105,P1-L2,Conveyor/Assembly,493,7,33805.7,436,41.3
+M-114,P2-L1,Robotic Welder,420,7,28800.0,538,39.8
+M-103,P1-L1,Robotic Welder,593,9,31626.7,706,39.7
+M-126,P3-L2,Stamping Press,409,4,49080.0,418,37.7
+M-128,P3-L3,CNC Mill,389,6,31120.0,407,36.7
+M-110,P1-L3,Robotic Welder,377,6,30160.0,517,35.8
+M-106,P1-L2,Conveyor/Assembly,558,5,53568.0,474,31.1
+M-121,P3-L1,Injection Molder,520,4,62400.0,354,24.4
+M-124,P3-L2,Conveyor/Assembly,403,1,193440.0,27,3.4

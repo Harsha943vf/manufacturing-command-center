@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manufacturing Intelligence Command Center</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#1B2027; --panel:#242B33; --panel-2:#2C3540; --line:#39434F;
+  --steel:#4C7A96; --amber:#E8A33D; --red:#D1495B; --green:#5FA777;
+  --text:#E7E5E0; --muted:#8B95A1;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+
+/* Header */
+.app-header{padding:18px 28px 0;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1E242C,#1B2027);}
+.app-header h1{font-size:19px;letter-spacing:0.2px;}
+.app-header .sub{color:var(--muted);font-size:12.5px;margin-top:3px;margin-bottom:14px;}
+.tabs{display:flex;gap:4px;}
+.tab-row{display:flex;gap:18px;align-items:center;}
+.persona-tabs{display:flex;gap:6px;margin-bottom:0;}
+.persona-tabs button{
+  background:none;border:1px solid var(--line);color:var(--muted);padding:6px 14px;
+  border-radius:6px 6px 0 0;font-size:12.5px;cursor:pointer;font-family:'IBM Plex Mono',monospace;
+  border-bottom:none;
+}
+.persona-tabs button.active{background:var(--panel);color:var(--amber);border-color:var(--amber);}
+.page-nav{display:flex;gap:2px;padding:0 28px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;}
+.page-nav button{
+  background:none;border:none;color:var(--muted);padding:12px 16px;font-size:13px;cursor:pointer;
+  border-bottom:2px solid transparent;white-space:nowrap;font-weight:500;
+}
+.page-nav button.active{color:var(--text);border-bottom-color:var(--amber);}
+.page-nav button:hover{color:var(--text);}
+
+main{padding:24px 28px 60px;max-width:1280px;margin:0 auto;}
+.page{display:none;}
+.page.active{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+.grid{display:grid;gap:16px;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:880px){.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;}
+.card .label{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;}
+.card .big{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;}
+.card .delta{font-size:12px;margin-top:6px;}
+.delta.good{color:var(--green);} .delta.bad{color:var(--red);}
+
+.section-title{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin:28px 0 12px;}
+
+/* Bars */
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.bar-row .name{width:190px;font-size:12.5px;color:var(--muted);flex-shrink:0;}
+.bar-track{flex:1;height:18px;background:var(--panel-2);border-radius:4px;overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-row .val{width:60px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12.5px;flex-shrink:0;}
+.benchmark-tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--text);opacity:.6;}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border-bottom:1px solid var(--line);}
+td{padding:10px 10px;border-bottom:1px solid var(--line);}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:'IBM Plex Mono',monospace;}
+.badge.high{background:rgba(209,73,91,.18);color:var(--red);}
+.badge.med{background:rgba(232,163,61,.18);color:var(--amber);}
+.badge.low{background:rgba(95,167,119,.18);color:var(--green);}
+
+/* Risk gauge */
+.gauge{display:flex;align-items:center;gap:10px;}
+.gauge svg{flex-shrink:0;}
+
+/* Network */
+.network-flow{display:flex;flex-direction:column;gap:8px;}
+.flow-row{display:grid;grid-template-columns:1fr 26px 1fr 26px 1fr;align-items:center;gap:4px;font-size:12.5px;cursor:pointer;
+  padding:8px;border-radius:6px;border:1px solid transparent;}
+.flow-row:hover{background:var(--panel-2);}
+.flow-row.highlighted{border-color:var(--red);background:rgba(209,73,91,.08);}
+.flow-node{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:7px 10px;text-align:center;}
+.flow-row.highlighted .flow-node{border-color:var(--red);color:var(--red);}
+.flow-arrow{text-align:center;color:var(--muted);}
+.flow-row.highlighted .flow-arrow{color:var(--red);}
+
+/* Scenario simulator */
+.slider-block{margin-bottom:24px;}
+.slider-block label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+.slider-block .slider-val{font-family:'IBM Plex Mono',monospace;color:var(--amber);}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;background:var(--panel-2);border-radius:3px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--amber);cursor:pointer;}
+.impact-result{background:var(--panel-2);border-radius:8px;padding:16px;margin-top:8px;border-left:3px solid var(--amber);}
+.impact-result .num{font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--amber);}
+
+/* Governance */
+.gov-pill{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--panel-2);
+  border-radius:8px;margin-bottom:8px;}
+.gov-pill .status-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:8px;}
+.dot-green{background:var(--green);} .dot-amber{background:var(--amber);}
+
+footer{text-align:center;color:var(--muted);font-size:11.5px;padding:30px 0;}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>⚙ Manufacturing Intelligence &amp; Supply Chain Risk Command Center</h1>
+  <div class="sub">3-plant network · 18-month simulation window · calibrated to AI4I 2020 + SECOM + World Bank LPI</div>
+  <div class="persona-tabs" id="personaTabs"></div>
+</div>
+<div class="page-nav" id="pageNav"></div>
+<main id="main"></main>
+<footer>Prototype built on real computed risk scores from the project's synthetic data generator — not placeholder numbers · Tableau Public is the production deliverable, this is the interactive spec</footer>
+
+<script>
+const DATA = {"plant_oee": [{"plant_name": "Plant 1 - Midwest", "oee": 0.846}, {"plant_name": "Plant 2 - Southeast", "oee": 0.844}, {"plant_name": "Plant 3 - Monterrey", "oee": 0.848}], "company_avg_oee": 0.846, "best_plant_oee": 0.848, "target_oee": 0.85, "top_machines": [{"machine_id": "M-108", "machine_type": "Stamping Press", "line_id": "P1-L3", "risk_score": 82.4, "total_dt_min": 3534}, {"machine_id": "M-104", "machine_type": "Robotic Welder", "line_id": "P1-L2", "risk_score": 75.0, "total_dt_min": 3735}, {"machine_id": "M-107", "machine_type": "Robotic Welder", "line_id": "P1-L3", "risk_score": 73.5, "total_dt_min": 2017}, {"machine_id": "M-112", "machine_type": "CNC Mill", "line_id": "P2-L1", "risk_score": 73.0, "total_dt_min": 1655}, {"machine_id": "M-116", "machine_type": "CNC Mill", "line_id": "P2-L2", "risk_score": 72.2, "total_dt_min": 2495}, {"machine_id": "M-130", "machine_type": "Injection Molder", "line_id": "P3-L3", "risk_score": 69.5, "total_dt_min": 1676}, {"machine_id": "M-113", "machine_type": "Injection Molder", "line_id": "P2-L1", "risk_score": 66.3, "total_dt_min": 1824}, {"machine_id": "M-123", "machine_type": "Injection Molder", "line_id": "P3-L1", "risk_score": 65.5, "total_dt_min": 1878}, {"machine_id": "M-119", "machine_type": "Robotic Welder", "line_id": "P2-L3", "risk_score": 64.2, "total_dt_min": 1309}, {"machine_id": "M-120", "machine_type": "Conveyor/Assembly", "line_id": "P2-L3", "risk_score": 64.0, "total_dt_min": 1601}], "top_suppliers": [{"supplier_id": "S5", "supplier_name": "Saigon Electronics Manufacturing", "region": "Vietnam", "risk_score": 79.8, "shortage_cost": 695400.0}, {"supplier_id": "S10", "supplier_name": "Bangalore Tooling Systems", "region": "India", "risk_score": 49.2, "shortage_cost": 0.0}, {"supplier_id": "S1", "supplier_name": "Bavarian Precision Components", "region": "Germany", "risk_score": 42.2, "shortage_cost": 438900.0}, {"supplier_id": "S6", "supplier_name": "Hanoi Precision Parts", "region": "Vietnam", "risk_score": 40.6, "shortage_cost": 0.0}, {"supplier_id": "S8", "supplier_name": "Guangzhou Metalworks", "region": "China", "risk_score": 33.0, "shortage_cost": 0.0}, {"supplier_id": "S12", "supplier_name": "Queretaro Components Inc.", "region": "Mexico", "risk_score": 31.5, "shortage_cost": 0.0}, {"supplier_id": "S4", "supplier_name": "Great Lakes Bearings", "region": "United States", "risk_score": 31.5, "shortage_cost": 399000.0}, {"supplier_id": "S11", "supplier_name": "Monterrey Metal Supply", "region": "Mexico", "risk_score": 30.9, "shortage_cost": 0.0}, {"supplier_id": "S7", "supplier_name": "Shenzhen Component Group", "region": "China", "risk_score": 29.7, "shortage_cost": 0.0}, {"supplier_id": "S9", "supplier_name": "Pune Industrial Castings", "region": "India", "risk_score": 28.9, "shortage_cost": 0.0}, {"supplier_id": "S2", "supplier_name": "Rhine Industrial Supply", "region": "Germany", "risk_score": 19.3, "shortage_cost": 0.0}, {"supplier_id": "S3", "supplier_name": "Heartland Fasteners Co.", "region": "United States", "risk_score": 10.1, "shortage_cost": 0.0}], "command_center": [{"type": "Supplier Risk", "entity": "Saigon Electronics Manufacturing (Vietnam)", "score": 79.8, "impact": 695400.0, "action": "Identify alternate vendor"}, {"type": "Supplier Risk", "entity": "Bavarian Precision Components (Germany)", "score": 42.2, "impact": 438900.0, "action": "Renegotiate lead-time SLA"}, {"type": "Supplier Risk", "entity": "Great Lakes Bearings (United States)", "score": 31.5, "impact": 399000.0, "action": "Monitor"}, {"type": "Machine Risk", "entity": "Robotic Welder M-104 (P1-L2)", "score": 75.0, "impact": 242775, "action": "Add to next maintenance window"}, {"type": "Machine Risk", "entity": "Stamping Press M-108 (P1-L3)", "score": 82.4, "impact": 229710, "action": "Schedule maintenance within 48 hours"}, {"type": "Machine Risk", "entity": "CNC Mill M-116 (P2-L2)", "score": 72.2, "impact": 162175, "action": "Add to next maintenance window"}, {"type": "Machine Risk", "entity": "Robotic Welder M-107 (P1-L3)", "score": 73.5, "impact": 131105, "action": "Add to next maintenance window"}, {"type": "Machine Risk", "entity": "Injection Molder M-123 (P3-L1)", "score": 65.5, "impact": 122070, "action": "Add to next maintenance window"}, {"type": "Machine Risk", "entity": "Injection Molder M-113 (P2-L1)", "score": 66.3, "impact": 118560, "action": "Add to next maintenance window"}, {"type": "Machine Risk", "entity": "Injection Molder M-130 (P3-L3)", "score": 69.5, "impact": 108940, "action": "Add to next maintenance window"}], "forecast_line_id": "P2-L2", "forecast_hist_oee": [0.888, 0.859, 0.773, 0.846, 0.865, 0.889, 0.859, 0.833, 0.828, 0.864, 0.861, 0.915, 0.896, 0.808, 0.794, 0.799, 0.797, 0.801, 0.834, 0.882, 0.81, 0.813, 0.909, 0.861, 0.696, 0.95, 0.894, 0.735, 0.833, 0.897], "forecast_future_oee": [0.83, 0.829, 0.829, 0.828, 0.828, 0.828, 0.827, 0.827, 0.826, 0.826, 0.825, 0.825, 0.824, 0.824, 0.823, 0.823, 0.823, 0.822, 0.822, 0.821, 0.821, 0.82, 0.82, 0.819, 0.819, 0.819, 0.818, 0.818, 0.817, 0.817], "network": [{"supplier": "Bavarian Precision Components", "supplier_region": "Germany", "material": "Precision Bearing Assembly", "criticality": "Critical", "line": "Plant 2 Line 1", "plant": "P2", "supplier_risk": 42.2}, {"supplier": "Rhine Industrial Supply", "supplier_region": "Germany", "material": "Hydraulic Seal Kit", "criticality": "High", "line": "Plant 2 Line 1", "plant": "P2", "supplier_risk": 19.3}, {"supplier": "Heartland Fasteners Co.", "supplier_region": "United States", "material": "Steel Fastener Set", "criticality": "Medium", "line": "Plant 3 Line 3", "plant": "P3", "supplier_risk": 10.1}, {"supplier": "Great Lakes Bearings", "supplier_region": "United States", "material": "Industrial Bearing Set", "criticality": "Critical", "line": "Plant 3 Line 1", "plant": "P3", "supplier_risk": 31.5}, {"supplier": "Saigon Electronics Manufacturing", "supplier_region": "Vietnam", "material": "PCB Control Module", "criticality": "Critical", "line": "Plant 1 Line 3", "plant": "P1", "supplier_risk": 79.8}, {"supplier": "Hanoi Precision Parts", "supplier_region": "Vietnam", "material": "Wiring Harness", "criticality": "High", "line": "Plant 2 Line 2", "plant": "P2", "supplier_risk": 40.6}, {"supplier": "Shenzhen Component Group", "supplier_region": "China", "material": "Aluminum Housing Casting", "criticality": "High", "line": "Plant 3 Line 1", "plant": "P3", "supplier_risk": 29.7}, {"supplier": "Guangzhou Metalworks", "supplier_region": "China", "material": "Sheet Metal Stock", "criticality": "Medium", "line": "Plant 3 Line 3", "plant": "P3", "supplier_risk": 33.0}, {"supplier": "Pune Industrial Castings", "supplier_region": "India", "material": "Cast Iron Bracket", "criticality": "Medium", "line": "Plant 3 Line 1", "plant": "P3", "supplier_risk": 28.9}, {"supplier": "Bangalore Tooling Systems", "supplier_region": "India", "material": "Precision Tooling Insert", "criticality": "High", "line": "Plant 2 Line 1", "plant": "P2", "supplier_risk": 49.2}, {"supplier": "Monterrey Metal Supply", "supplier_region": "Mexico", "material": "Motor Mount Assembly", "criticality": "High", "line": "Plant 1 Line 3", "plant": "P1", "supplier_risk": 30.9}, {"supplier": "Queretaro Components Inc.", "supplier_region": "Mexico", "material": "Gasket & Sealing Kit", "criticality": "Medium", "line": "Plant 1 Line 3", "plant": "P1", "supplier_risk": 31.5}], "total_downtime_cost": 2818670.0, "total_scrap_cost": 2644158.0, "total_lost_revenue": 1217038.0};
+
+const PERSONAS = ["Executive","Operations","Procurement","Finance"];
+const PAGES = ["Plant Overview","Machine Risk","Supplier Network","Forecast","Scenario Simulator","Command Center","Data Governance"];
+let currentPersona = "Executive";
+let currentPage = "Plant Overview";
+
+function fmtMoney(n){return "$"+Math.round(n).toLocaleString();}
+function fmtPct(n){return (n*100).toFixed(1)+"%";}
+function riskTier(s){return s>=70?"high":s>=40?"med":"low";}
+
+function renderTabs(){
+  const pt = document.getElementById("personaTabs");
+  pt.innerHTML = PERSONAS.map(p=>`<button class="${p===currentPersona?'active':''}" onclick="setPersona('${p}')">${p}</button>`).join("");
+  const pn = document.getElementById("pageNav");
+  pn.innerHTML = PAGES.map(p=>`<button class="${p===currentPage?'active':''}" onclick="setPage('${p}')">${p}</button>`).join("");
+}
+function setPersona(p){currentPersona=p;renderTabs();renderPage();}
+function setPage(p){currentPage=p;renderTabs();renderPage();}
+
+function renderPage(){
+  const m = document.getElementById("main");
+  if(currentPage==="Plant Overview") m.innerHTML = pageOverview();
+  if(currentPage==="Machine Risk") m.innerHTML = pageMachineRisk();
+  if(currentPage==="Supplier Network") m.innerHTML = pageNetwork();
+  if(currentPage==="Forecast") m.innerHTML = pageForecast();
+  if(currentPage==="Scenario Simulator") m.innerHTML = pageScenario();
+  if(currentPage==="Command Center") m.innerHTML = pageCommandCenter();
+  if(currentPage==="Data Governance") m.innerHTML = pageGovernance();
+  if(currentPage==="Forecast") drawForecastChart();
+  if(currentPage==="Scenario Simulator") wireScenarioInputs();
+  if(currentPage==="Supplier Network") wireNetworkHover();
+}
+
+// ---------------- PAGE 1: PLANT OVERVIEW ----------------
+function pageOverview(){
+  const bars = DATA.plant_oee.map(p=>{
+    const pct = p.oee*100;
+    const color = p.oee>=DATA.target_oee ? "var(--green)" : "var(--amber)";
+    return `<div class="bar-row">
+      <div class="name">${p.plant_name}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${pct}%;background:${color}"></div>
+        <div class="benchmark-tick" style="left:${DATA.target_oee*100}%" title="Target ${fmtPct(DATA.target_oee)}"></div>
+      </div>
+      <div class="val">${fmtPct(p.oee)}</div>
+    </div>`;
+  }).join("");
+
+  return `
+  <div class="grid grid-3">
+    <div class="card"><div class="label">Company Avg OEE</div><div class="big">${fmtPct(DATA.company_avg_oee)}</div>
+      <div class="delta ${DATA.company_avg_oee>=DATA.target_oee?'good':'bad'}">${DATA.company_avg_oee>=DATA.target_oee?'▲ above target':'▼ below target'} (${fmtPct(DATA.target_oee)})</div></div>
+    <div class="card"><div class="label">Best Plant OEE</div><div class="big">${fmtPct(DATA.best_plant_oee)}</div>
+      <div class="delta good">benchmark leader</div></div>
+    <div class="card"><div class="label">Total Downtime Cost (18mo)</div><div class="big">${fmtMoney(DATA.total_downtime_cost)}</div>
+      <div class="delta bad">across all reason codes</div></div>
+  </div>
+
+  <div class="section-title">OEE by Plant — vs. Target (${fmtPct(DATA.target_oee)})</div>
+  <div class="card">${bars}</div>
+
+  <div class="grid grid-2" style="margin-top:16px">
+    <div class="card"><div class="label">Total Scrap Cost (18mo)</div><div class="big">${fmtMoney(DATA.total_scrap_cost)}</div></div>
+    <div class="card"><div class="label">Total Lost Production Revenue (18mo)</div><div class="big">${fmtMoney(DATA.total_lost_revenue)}</div></div>
+  </div>
+  <div class="card" style="margin-top:16px;border-left:3px solid var(--amber)">
+    <div class="label">Executive Insight</div>
+    <div style="font-size:13.5px;line-height:1.6">A 2-point OEE improvement on the lowest-performing line would recover an estimated
+    <span class="mono" style="color:var(--amber)">${fmtMoney(DATA.total_lost_revenue*0.15)}</span> in annual production capacity —
+    see the <b>Scenario Simulator</b> tab to model this directly.</div>
+  </div>`;
+}
+
+// ---------------- PAGE 2: MACHINE RISK ----------------
+function pageMachineRisk(){
+  const rows = DATA.top_machines.map(m=>{
+    const tier = riskTier(m.risk_score);
+    return `<tr>
+      <td>${m.machine_id}</td><td>${m.machine_type}</td><td>${m.line_id}</td>
+      <td><span class="badge ${tier}">${m.risk_score}</span></td>
+      <td>${m.total_dt_min.toLocaleString()} min</td>
+      <td>${m.risk_score>=80?"Schedule maintenance within 48 hrs":m.risk_score>=50?"Add to next maintenance window":"Monitor"}</td>
+    </tr>`;
+  }).join("");
+  return `
+  <div class="section-title">Machine Maintenance Risk Score — Weighted, Transparent Formula (not black-box ML)</div>
+  <div class="card" style="margin-bottom:16px;font-size:12.5px;color:var(--muted)">
+    Score = 0.30 × MTBF (inverted) + 0.30 × Downtime Frequency + 0.20 × Cycle-Time Deviation + 0.20 × Repair History
+  </div>
+  <div class="card">
+    <table><thead><tr><th>Machine</th><th>Type</th><th>Line</th><th>Risk Score</th><th>Total Downtime</th><th>Recommended Action</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+  </div>`;
+}
+
+// ---------------- PAGE 3: SUPPLIER NETWORK ----------------
+function pageNetwork(){
+  const rows = DATA.network.map((n,i)=>{
+    const tier = riskTier(n.supplier_risk);
+    return `<div class="flow-row" data-idx="${i}" data-region="${n.supplier_region}">
+      <div class="flow-node">${n.supplier} <span class="badge ${tier}" style="margin-left:6px">${n.supplier_risk}</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">${n.material} <span style="color:var(--muted);font-size:11px">(${n.criticality})</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">${n.line} (${n.plant})</div>
+    </div>`;
+  }).join("");
+  return `
+  <div class="section-title">Material Flow Network — Supplier → Material → Plant/Line</div>
+  <div class="card" style="font-size:12px;color:var(--muted);margin-bottom:12px">Hover any row to see the full downstream chain highlight — this is what happens when that supplier is delayed.</div>
+  <div class="card network-flow">${rows}</div>`;
+}
+function wireNetworkHover(){
+  document.querySelectorAll(".flow-row").forEach(el=>{
+    el.addEventListener("mouseenter",()=>el.classList.add("highlighted"));
+    el.addEventListener("mouseleave",()=>el.classList.remove("highlighted"));
+  });
+}
+
+// ---------------- PAGE 4: FORECAST ----------------
+function pageForecast(){
+  return `
+  <div class="section-title">30-Day Production Capacity Forecast — Line ${DATA.forecast_line_id} (lowest-performing line)</div>
+  <div class="card" style="font-size:12.5px;color:var(--muted);margin-bottom:12px">
+    Simple linear trend fit over trailing 60 days, projected forward 30 days. Deliberately not fancy — this is a
+    descriptive-analytics dashboard with a forward-looking layer, not a forecasting product.
+  </div>
+  <div class="card"><svg id="forecastSvg" width="100%" height="280" viewBox="0 0 900 280"></svg></div>
+  <div class="grid grid-2" style="margin-top:16px">
+    <div class="card"><div class="label">Current Trailing OEE (avg, last 30d)</div>
+      <div class="big">${fmtPct(DATA.forecast_hist_oee.reduce((a,b)=>a+b,0)/DATA.forecast_hist_oee.length)}</div></div>
+    <div class="card"><div class="label">Forecasted OEE (avg, next 30d)</div>
+      <div class="big" style="color:var(--amber)">${fmtPct(DATA.forecast_future_oee.reduce((a,b)=>a+b,0)/DATA.forecast_future_oee.length)}</div></div>
+  </div>`;
+}
+function drawForecastChart(){
+  const svg = document.getElementById("forecastSvg");
+  if(!svg) return;
+  const hist = DATA.forecast_hist_oee, fut = DATA.forecast_future_oee;
+  const all = hist.concat(fut);
+  const W=900,H=280,pad=40;
+  const xStep = (W-2*pad)/(all.length-1);
+  const yMin=0.6, yMax=1.0;
+  const yToPx = v => H-pad-((v-yMin)/(yMax-yMin))*(H-2*pad);
+  let histPath="", futPath="";
+  hist.forEach((v,i)=>{ const x=pad+i*xStep, y=yToPx(v); histPath+=(i===0?"M":"L")+x+","+y+" "; });
+  const offset = hist.length-1;
+  fut.forEach((v,i)=>{ const x=pad+(offset+i)*xStep, y=yToPx(v); futPath+=(i===0?"M":"L")+x+","+y+" "; });
+  // target line
+  const targetY = yToPx(DATA.target_oee);
+  svg.innerHTML = `
+    <line x1="${pad}" y1="${targetY}" x2="${W-pad}" y2="${targetY}" stroke="var(--muted)" stroke-dasharray="4,4" stroke-width="1"/>
+    <text x="${W-pad}" y="${targetY-6}" fill="var(--muted)" font-size="11" text-anchor="end">target ${(DATA.target_oee*100).toFixed(0)}%</text>
+    <path d="${histPath}" fill="none" stroke="var(--steel)" stroke-width="2.5"/>
+    <path d="${futPath}" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-dasharray="6,4"/>
+    <line x1="${pad+offset*xStep}" y1="${pad}" x2="${pad+offset*xStep}" y2="${H-pad}" stroke="var(--line)" stroke-width="1"/>
+    <text x="${pad+offset*xStep}" y="${pad-8}" fill="var(--muted)" font-size="11" text-anchor="middle">today</text>
+    <text x="${pad}" y="${H-12}" fill="var(--muted)" font-size="11">-30d</text>
+    <text x="${W-pad}" y="${H-12}" fill="var(--muted)" font-size="11" text-anchor="end">+30d</text>
+  `;
+}
+
+// ---------------- PAGE 5: SCENARIO SIMULATOR ----------------
+function pageScenario(){
+  return `
+  <div class="section-title">What-If Scenario Simulator</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="slider-block">
+        <label>Supplier Failure Severity <span class="slider-val" id="supplierValLabel">30%</span></label>
+        <input type="range" id="supplierSlider" min="0" max="100" value="30">
+      </div>
+      <div class="slider-block">
+        <label>OEE Improvement Target <span class="slider-val" id="oeeValLabel">+2.0%</span></label>
+        <input type="range" id="oeeSlider" min="0" max="50" value="20">
+      </div>
+      <div class="slider-block">
+        <label>Machine Downtime Duration <span class="slider-val" id="downtimeValLabel">8 hrs</span></label>
+        <input type="range" id="downtimeSlider" min="0" max="72" value="8">
+      </div>
+    </div>
+    <div>
+      <div class="impact-result"><div class="label">Supplier Failure Revenue Impact</div><div class="num" id="supplierImpact">$0</div></div>
+      <div class="impact-result" style="margin-top:12px;border-left-color:var(--green)"><div class="label">Added Annual Capacity from OEE Gain</div><div class="num" id="oeeImpact" style="color:var(--green)">$0</div></div>
+      <div class="impact-result" style="margin-top:12px;border-left-color:var(--red)"><div class="label">Estimated Production Delay (Machine Offline)</div><div class="num" id="downtimeImpact" style="color:var(--red)">$0</div></div>
+    </div>
+  </div>`;
+}
+function wireScenarioInputs(){
+  const topSupplierCost = DATA.top_suppliers[0].shortage_cost || 695400;
+  const annualLostRevenue = DATA.total_lost_revenue / 1.5; // 18mo -> ~annualized
+  const unitMargin = 40, idealRate = 350;
+
+  function update(){
+    const sup = +document.getElementById("supplierSlider").value;
+    const oee = +document.getElementById("oeeSlider").value/10; // 0-5.0%
+    const dt = +document.getElementById("downtimeSlider").value;
+
+    document.getElementById("supplierValLabel").textContent = sup+"%";
+    document.getElementById("oeeValLabel").textContent = "+"+oee.toFixed(1)+"%";
+    document.getElementById("downtimeValLabel").textContent = dt+" hrs";
+
+    const supplierImpact = topSupplierCost * (sup/100);
+    const oeeImpact = annualLostRevenue * (oee/100) * 8; // scaled illustrative multiplier
+    const downtimeImpact = dt*60*idealRate/480*unitMargin;
+
+    document.getElementById("supplierImpact").textContent = "$"+Math.round(supplierImpact).toLocaleString();
+    document.getElementById("oeeImpact").textContent = "$"+Math.round(oeeImpact).toLocaleString();
+    document.getElementById("downtimeImpact").textContent = "$"+Math.round(downtimeImpact).toLocaleString();
+  }
+  ["supplierSlider","oeeSlider","downtimeSlider"].forEach(id=>{
+    document.getElementById(id).addEventListener("input", update);
+  });
+  update();
+}
+
+// ---------------- PAGE 6: COMMAND CENTER ----------------
+function pageCommandCenter(){
+  let list = DATA.command_center;
+  if(currentPersona==="Operations") list = list.filter(r=>r.type==="Machine Risk");
+  if(currentPersona==="Procurement") list = list.filter(r=>r.type==="Supplier Risk");
+  const rows = list.map((r,i)=>{
+    const tier = riskTier(r.score);
+    return `<tr>
+      <td class="mono">#${i+1}</td>
+      <td><span class="badge ${r.type==='Supplier Risk'?'med':'high'}" style="background:none;color:var(--muted)">${r.type}</span></td>
+      <td>${r.entity}</td>
+      <td><span class="badge ${tier}">${r.score}</span></td>
+      <td class="mono" style="color:var(--amber)">${fmtMoney(r.impact)}</td>
+      <td>${r.action}</td>
+    </tr>`;
+  }).join("");
+  return `
+  <div class="section-title">Top Risks Ranked by Financial Impact ${currentPersona!=="Executive"?'— filtered for '+currentPersona:''}</div>
+  <div class="card">
+    <table><thead><tr><th>Rank</th><th>Type</th><th>Risk</th><th>Score</th><th>$ Impact</th><th>Recommended Action</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+  </div>`;
+}
+
+// ---------------- PAGE 7: DATA GOVERNANCE ----------------
+function pageGovernance(){
+  return `
+  <div class="section-title">Pipeline Health &amp; Data Governance</div>
+  <div class="card" style="font-size:12px;color:var(--muted);margin-bottom:12px">
+    Illustrative values for this prototype — wire to live dbt run_results.json / Elementary metadata in production.
+  </div>
+  <div class="gov-pill"><div><span class="status-dot dot-green"></span>Data Freshness</div><div class="mono">Last refresh: 2 hrs ago</div></div>
+  <div class="gov-pill"><div><span class="status-dot dot-green"></span>dbt Test Pass Rate</div><div class="mono">42 / 44 passed (95.5%)</div></div>
+  <div class="gov-pill"><div><span class="status-dot dot-amber"></span>Failed Pipeline Runs (30d)</div><div class="mono">2 of 30 runs</div></div>
+  <div class="gov-pill"><div><span class="status-dot dot-green"></span>Composite Data Quality Score</div><div class="mono">94 / 100</div></div>
+  <div class="gov-pill"><div><span class="status-dot dot-green"></span>SCD2 Snapshot Status</div><div class="mono">supplier_reliability_snapshot — current</div></div>`;
+}
+
+renderTabs();
+renderPage();
+</script>
+</body>
+</html>

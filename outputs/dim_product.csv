@@ -1,0 +1,7 @@
+product_id,sku,product_family,margin_class
+PR1,Pro-Series Pump,Pro-Series Pump,High
+PR2,Standard Valve Assembly,Standard Valves,Medium
+PR3,Industrial Gearbox X200,Gearbox Family,High
+PR4,Economy Bracket Kit,Bracket Family,Low
+PR5,Precision Actuator A5,Actuator Family,High
+PR6,Standard Conveyor Roller,Roller Family,Medium

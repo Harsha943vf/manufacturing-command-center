@@ -1,0 +1,18 @@
+# profiles.yml
+#
+# DuckDB needs no server, no Docker, no install beyond `pip install dbt-duckdb`.
+# On a Mac, this file normally lives at ~/.dbt/profiles.yml
+# For this project, you can also point DBT_PROFILES_DIR at this folder:
+#     export DBT_PROFILES_DIR=$(pwd)
+#
+# The .duckdb file below is just a local file on disk — open it directly in
+# DuckDB's CLI/Python client, or query it from a Python script, or (for Tableau)
+# connect via DuckDB's ODBC driver.
+
+manufacturing_command_center:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: 'manufacturing_command_center.duckdb'
+      threads: 4

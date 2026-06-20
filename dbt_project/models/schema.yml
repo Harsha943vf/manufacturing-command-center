@@ -1,0 +1,70 @@
+version: 2
+
+models:
+  - name: stg_production_run
+    columns:
+      - name: run_id
+        tests: [unique, not_null]
+      - name: line_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_line')
+              field: line_id
+      - name: machine_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_machine')
+              field: machine_id
+
+  - name: stg_downtime
+    columns:
+      - name: downtime_id
+        tests: [unique, not_null]
+      - name: duration_minutes
+        tests:
+          - not_null
+
+  - name: stg_supplier_delivery
+    columns:
+      - name: delivery_id
+        tests: [unique, not_null]
+      - name: supplier_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_supplier')
+              field: supplier_id
+      - name: delay_days
+        tests:
+          - not_null
+
+  - name: fct_oee_daily
+    columns:
+      - name: oee
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1.0001   # tiny float tolerance
+
+  - name: dim_machine_risk_score
+    columns:
+      - name: machine_id
+        tests: [unique, not_null]
+      - name: machine_risk_score
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+
+  - name: dim_supplier_risk_score
+    columns:
+      - name: supplier_id
+        tests: [unique, not_null]
+      - name: supplier_risk_score
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100

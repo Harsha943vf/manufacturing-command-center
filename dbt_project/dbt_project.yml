@@ -1,0 +1,25 @@
+name: 'manufacturing_command_center'
+version: '1.0.0'
+config-version: 2
+
+profile: 'manufacturing_command_center'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  manufacturing_command_center:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  manufacturing_command_center:
+    +quote_columns: false

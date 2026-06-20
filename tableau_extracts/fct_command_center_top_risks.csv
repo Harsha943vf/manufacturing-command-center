@@ -1,0 +1,11 @@
+risk_type,entity_id,description,risk_score,estimated_financial_impact_usd,recommended_action,impact_rank
+Supplier Risk,S5,Saigon Electronics Manufacturing (Vietnam),79.8,695400.0,Identify alternate vendor for critical materials,1
+Supplier Risk,S1,Bavarian Precision Components (Germany),42.2,438900.0,Renegotiate lead-time SLA / add buffer stock,2
+Supplier Risk,S4,Great Lakes Bearings (United States),31.5,399000.0,Monitor -- no action needed,3
+Machine Risk,M-104,Robotic Welder M-104 (Line P1-L2),75.0,242775.0,Add to next scheduled maintenance window,4
+Machine Risk,M-108,Stamping Press M-108 (Line P1-L3),82.4,229710.0,Schedule maintenance within 48 hours,5
+Machine Risk,M-116,CNC Mill M-116 (Line P2-L2),72.2,162175.0,Add to next scheduled maintenance window,6
+Machine Risk,M-122,Robotic Welder M-122 (Line P3-L1),62.6,146445.0,Add to next scheduled maintenance window,7
+Machine Risk,M-115,Conveyor/Assembly M-115 (Line P2-L2),55.4,135330.0,Add to next scheduled maintenance window,8
+Machine Risk,M-107,Robotic Welder M-107 (Line P1-L3),73.5,131105.0,Add to next scheduled maintenance window,9
+Machine Risk,M-127,Stamping Press M-127 (Line P3-L2),61.2,129545.0,Add to next scheduled maintenance window,10
