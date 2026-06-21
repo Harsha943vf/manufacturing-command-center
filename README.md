@@ -81,7 +81,7 @@ Then open the CSVs in `tableau_extracts/` from Tableau Public.
    Index are weighted, explainable formulas a plant manager could actually audit.
 3. **Financial layer on every operational metric.** Downtime, scrap, and lost-production
    costs are first-class fields, not an afterthought.
-4. **Self-monitoring pipeline.** dbt tests + Elementary observability mean the project can
+4. **Self-monitoring pipeline.** dbt tests and schema checks mean the project can
    answer "do you trust your own data?" — not just "can you build a chart?"
 5. **Zero-cost stack, deliberately chosen.** DuckDB, dbt Core, GitHub Actions, and Tableau
    Public replace their paid/Docker-dependent equivalents without losing any of the
